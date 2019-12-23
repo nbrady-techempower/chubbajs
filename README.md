@@ -1,3 +1,5 @@
+## WARNING: This is a mess atm. It's a mess. Don't look at it.
+
 # ChubbaJS (pronounced gif)
 
 ChubbaJS is a very opinionated JS framework built on top of
@@ -29,7 +31,7 @@ on top of the classes you'll build for your models.
 
 ### Why do I even need this?
 
-You probably don't. I didn't build it for you. I built it for me.l
+You probably don't. I didn't build it for you. I built it for me. 
 I hate writing migrations. I hate running migrations. Sometimes I get
 an app idea, and I just want to start writing it in JavaScript. Now, I 
 can do that. I just create a database in Postgres, update my config, and
@@ -45,10 +47,6 @@ for quickly prototyping apps. It only does up migrations right now and
 it doesn't handle other things like optimistic locking, etc, on its own.
 I want it to do that. Until then, it's not ready for production.
 
-### I want to name an instance variable one thing, but name the table something else. Can I do that?
-
-ChubbaJS is opinionated and he says, "No! Grow up! Stop over-
-engineering and just name it one way."
-
 ## Let's Get Technical
 
+See, there's nothing here yet. So don't use it.

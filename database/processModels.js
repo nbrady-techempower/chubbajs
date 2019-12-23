@@ -5,8 +5,13 @@ const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
 
-module.exports = () => {
+module.exports = config => {
   console.log(chalk.blue("===> Loading models..."));
-  fs.readdirSync(path.join(__dirname, "../models"))
-    .map((file) => require(path.join(__dirname, "../models", file)));
+  const pathToModels = config.projectRoot
+    ? path.join(config.projectRoot, "models")
+    : path.join(__dirname, "../../../models");
+  fs.readdirSync(pathToModels).map(file =>
+    require(path.join(pathToModels, file))
+  );
+  console.log(chalk.blue("===> Done."));
 };

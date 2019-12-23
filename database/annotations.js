@@ -3,9 +3,8 @@ const tableHash = {};
 function createTableInHash(tableName) {
   if (!tableHash[tableName]) {
     tableHash[tableName] = {
-      columns: {
-      }
-    }
+      columns: {}
+    };
   }
 }
 
@@ -20,7 +19,7 @@ function createColumnInHash(tableName, colName) {
       index: false,
       colType: "",
       defaultValue: null
-    }
+    };
   }
   return tableHash[tableName].columns[colName];
 }
@@ -63,21 +62,20 @@ function boolean(target, key, descriptor) {
 }
 
 function varChar(value) {
-  return function _(target,key, descriptor) {
+  return function _(target, key, descriptor) {
     const col = createColumnInHash(target.constructor.name, key);
     col.colType = `VARCHAR(${value})`;
     col.udtName = "varchar";
     col.characterMaximumLength = value;
     col.driverType = "text";
-  }
+  };
 }
 
-
 function defaultValue(value) {
-  return function _(target,key, descriptor) {
+  return function _(target, key, descriptor) {
     const col = createColumnInHash(target.constructor.name, key);
-    col.defaultValue = ('' + value).toLowerCase();
-  }
+    col.defaultValue = ("" + value).toLowerCase();
+  };
 }
 
 module.exports = {
