@@ -2,8 +2,10 @@
  * Optimistic locking for PG
  */
 
-const { tableHash } = require("./annotations");
-const { pool } = require("../index");
+import { pool } from "../index";
+import _annotations from "./annotations";
+
+const { tableHash } = _annotations;
 
 class Model {
   constructor(id) {
@@ -59,4 +61,4 @@ class Model {
   }
 }
 
-module.exports = Model;
+export default Model;

@@ -189,7 +189,4 @@ const validate = async function(ctx, validateParams) {
   };
 };
 
-module.exports = {
-  ValidationTypes,
-  validate
-};
+export default { ValidationTypes, validate };

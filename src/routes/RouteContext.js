@@ -34,4 +34,4 @@ class RouteContext {
   }
 }
 
-module.exports = RouteContext;
+export default RouteContext;

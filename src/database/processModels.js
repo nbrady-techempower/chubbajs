@@ -1,11 +1,11 @@
 /**
  * Loads all the model files so their annotations can be processed
  */
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 const chalk = require("chalk");
 
-module.exports = config => {
+export default config => {
   console.log(chalk.blue("===> Loading models..."));
   const pathToModels = config.projectRoot
     ? path.join(config.projectRoot, "models")

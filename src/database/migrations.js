@@ -1,9 +1,11 @@
 const chalk = require("chalk");
+import processModels from "./processModels";
+import _annotations from "./annotations";
 
-module.exports = function(config, pool) {
-  const processModels = require("./processModels");
+const { tableHash } = _annotations;
+
+export default function(config, pool) {
   processModels(config);
-  const { tableHash } = require("./annotations");
 
   function createColSqlStr(tableName, colName) {
     const col = tableHash[tableName].columns[colName];
@@ -12,7 +14,7 @@ module.exports = function(config, pool) {
       sqlStr += ` NOT NULL`;
     }
     if (col.defaultValue !== null) {
-      sqlStr += ` DEFAULT ${col.defaultValue}`
+      sqlStr += ` DEFAULT ${col.defaultValue}`;
     }
     return sqlStr;
   }
@@ -33,14 +35,13 @@ module.exports = function(config, pool) {
   }
 
   async function alterTable(tableName) {
-
     const res = await pool.query(`
     SELECT * FROM information_schema.columns
     WHERE table_schema = 'public' and table_name = '${tableName}';
   `);
 
     const colHash = {};
-    res.rows.forEach((col) => {
+    res.rows.forEach(col => {
       colHash[col.column_name] = col;
     });
     const currColumns = Object.keys(colHash);
@@ -62,18 +63,24 @@ module.exports = function(config, pool) {
         if (modelCol.isNullable !== dbCol.is_nullable) {
           console.log(`"${tableName}"."${colName}" nullable has changed.`);
           let sqlStr = `ALTER TABLE "${tableName}" ALTER COLUMN "${colName}" `;
-          sqlStr += (modelCol.notNull) ? "SET NOT NULL" : "DROP NOT NULL";
+          sqlStr += modelCol.notNull ? "SET NOT NULL" : "DROP NOT NULL";
           await pool.query(sqlStr);
         }
         // Check for default value change
-        if (!modelCol.primaryKey && modelCol.defaultValue !== dbCol.column_default) {
+        if (
+          !modelCol.primaryKey &&
+          modelCol.defaultValue !== dbCol.column_default
+        ) {
           console.log(`"${tableName}"."${colName}" default value changed.`);
           let sqlStr = `ALTER TABLE "${tableName}" ALTER COLUMN "${colName}" `;
           sqlStr += `SET DEFAULT ${modelCol.defaultValue}`;
           await pool.query(sqlStr);
         }
       } else {
-        let sqlStr = `ALTER TABLE "${tableName}" ADD ${createColSqlStr(tableName, colName)}`;
+        let sqlStr = `ALTER TABLE "${tableName}" ADD ${createColSqlStr(
+          tableName,
+          colName
+        )}`;
         await pool.query(sqlStr);
       }
     }
@@ -86,7 +93,7 @@ module.exports = function(config, pool) {
     WHERE table_schema = 'public';
   `);
 
-    const currTables = res.rows.map((table) => table.table_name);
+    const currTables = res.rows.map(table => table.table_name);
 
     for (let tableName in tableHash) {
       if (currTables.includes(tableName)) {
@@ -99,11 +106,10 @@ module.exports = function(config, pool) {
     console.log(chalk.blue("===> Done."));
   }
 
-
   if (config.database.migrations) {
     console.log(chalk.blue("===> Starting migrations..."));
     runMigrations();
   } else {
     console.log(chalk.blue("===> Skipping migrations... Done."));
   }
-};
+}

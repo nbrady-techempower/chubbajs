@@ -1,0 +1,50 @@
+import path from "path";
+import bodyParser from "body-parser";
+const { Pool } = require("pg");
+const chalk = require("chalk");
+const express = require("express");
+import database from "./database";
+import routes from "./routes";
+import loadModels from "./database/migrations";
+import loadControllers from "./routes/processControllers";
+
+console.log(chalk.magenta("Thank you for choosing ChubbaJS"));
+
+const app = express();
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
+
+console.log(chalk.blue("===> Establishing database connection..."));
+// Create the database pool
+let pool;
+const context = {
+  app
+};
+
+async function configure(config) {
+  try {
+    pool = new Pool({
+      connectionString: `postgres://${config.database.user}:${config.database.password}@${config.database.host}:${config.database.port}/${config.database.database}`
+    });
+  } catch (e) {
+    console.log(chalk.red("Database connection failed."));
+    console.log(chalk.red(e));
+  }
+  console.log(chalk.blue("===> Done."));
+
+  /** Load all of our Models / Run migrations **/
+  loadModels(config, pool);
+
+  /** Load all of our Controllers **/
+  loadControllers(config);
+
+  context.pool = pool;
+  context.config = config;
+  return context;
+}
+
+export { configure, database, routes, pool, context };

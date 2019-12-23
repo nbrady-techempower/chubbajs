@@ -1,6 +1,9 @@
-const { context } = require("../server");
-const { ValidationTypes, validate } = require("./validate");
-const RouteContext = require("./RouteContext");
+import { context } from "../index";
+import _validate from "./validate";
+import RouteContext from "./RouteContext";
+
+// Rollup haxed
+const { ValidationTypes, validate } = _validate;
 
 /**
  * The user cannot enter this route unless they are authorized
@@ -163,7 +166,7 @@ function ALL(path) {
   };
 }
 
-module.exports = {
+export default {
   GET,
   POST,
   UPDATE,

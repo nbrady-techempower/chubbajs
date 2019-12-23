@@ -1,4 +1,3 @@
 .idea
 node_modules
-config/config.*.js
-!config/config.example.js
+*.log

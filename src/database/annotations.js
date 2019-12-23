@@ -78,7 +78,7 @@ function defaultValue(value) {
   };
 }
 
-module.exports = {
+export default {
   primaryKey,
   notNull,
   varChar,
