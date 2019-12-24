@@ -58,10 +58,7 @@ const validate = async function(ctx, validateParams) {
       try {
         value = sanitize(value);
       } catch (e) {
-        ctx.addError(
-          msg || "Don't try any funny business. You'll end up in the clink."
-        );
-        ctx.log.tamper(`Custom sanitization failed for ${key}: ${value}`);
+        ctx.addError(msg || "Validation failed.");
 
         hardFail = true;
         break;
@@ -75,10 +72,7 @@ const validate = async function(ctx, validateParams) {
      * This will hardFail if the return value is false.
      */
     if (validate && !validate(value)) {
-      ctx.addError(
-        msg || "Don't try any funny business. You'll end up in the clink."
-      );
-      ctx.log.tamper(`Custom validation failed: ${value}`);
+      ctx.addError(msg || "Validation failed.");
 
       hardFail = true;
       break;
@@ -90,12 +84,7 @@ const validate = async function(ctx, validateParams) {
      */
     if (validationType === ValidationTypes.databaseId) {
       if (!isValidDatabaseId(value)) {
-        ctx.addError(
-          msg || "Don't try any funny business. You'll end up in the clink."
-        );
-        ctx.log.tamper(
-          `${ValidationTypes.databaseId} validation failed: ${value}`
-        );
+        ctx.addError(msg || "Validation failed.");
 
         hardFail = true;
         break;
@@ -109,10 +98,6 @@ const validate = async function(ctx, validateParams) {
      */
     if (validationType === ValidationTypes.enforcePositive) {
       if (!value || isNaN(parseInt(value)) || value <= 0) {
-        ctx.log.tamper(
-          `${ValidationTypes.enforcePositive} validation failed: ${value}`
-        );
-
         value = 1;
       }
       value = +value;
@@ -124,10 +109,6 @@ const validate = async function(ctx, validateParams) {
      */
     if (validationType === ValidationTypes.enforcePositiveInt) {
       if (!value || isNaN(parseInt(value)) || value <= 0) {
-        ctx.log.tamper(
-          `${ValidationTypes.enforcePositiveInt} validation failed: ${value}`
-        );
-
         value = 1;
       }
       value = Math.round(+value);
@@ -147,9 +128,6 @@ const validate = async function(ctx, validateParams) {
       }
       if (failed) {
         ctx.addError(msg || "You didn't meet the length requirements.");
-        ctx.log.tamper(
-          `${ValidationTypes.enforcePositive} validation failed: ${value}`
-        );
         hardFail = true;
         break;
       }
