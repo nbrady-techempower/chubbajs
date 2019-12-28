@@ -27566,7 +27566,9 @@ var processModels = (function (config) {
 
   try {
     fs.readdirSync(pathToModels).forEach(function (file) {
-      return require(path.join(pathToModels, file));
+      if (file.match(/\.js$/)) {
+        require(path.join(pathToModels, file));
+      }
     });
   } catch (e) {
     console.log(chalk.red("Problem loading models from path: ".concat(pathToModels)));
@@ -27781,7 +27783,9 @@ var loadControllers = (function (config) {
 
   try {
     fs.readdirSync(pathToControllers).forEach(function (file) {
-      return require(path.join(pathToControllers, file));
+      if (file.match(/\.js$/)) {
+        require(path.join(pathToControllers, file));
+      }
     });
   } catch (e) {
     console.log(chalk$2.red("Problem loading controllers from path: ".concat(pathToControllers)));

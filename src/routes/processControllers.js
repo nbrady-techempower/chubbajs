@@ -11,9 +11,11 @@ export default config => {
     ? path.join(config.projectRoot, "controllers")
     : path.join(__dirname, "../../../controllers");
   try {
-    fs.readdirSync(pathToControllers).forEach(file =>
-      require(path.join(pathToControllers, file))
-    );
+    fs.readdirSync(pathToControllers).forEach(file => {
+      if (file.match(/\.js$/)) {
+        require(path.join(pathToControllers, file))
+      }
+    });
   } catch(e) {
     console.log(chalk.red(`Problem loading controllers from path: ${pathToControllers}`));
     console.log(e);

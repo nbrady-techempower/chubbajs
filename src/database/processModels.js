@@ -11,9 +11,11 @@ export default config => {
     ? path.join(config.projectRoot, "models")
     : path.join(__dirname, "../../../models");
   try {
-    fs.readdirSync(pathToModels).forEach(file =>
-      require(path.join(pathToModels, file))
-    );
+    fs.readdirSync(pathToModels).forEach(file => {
+      if (file.match(/\.js$/)) {
+        require(path.join(pathToModels, file))
+      }
+    });
   } catch(e) {
     console.log(chalk.red(`Problem loading models from path: ${pathToModels}`));
     console.log(e);
