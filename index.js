@@ -27563,9 +27563,17 @@ var chalk = require("chalk");
 var processModels = (function (config) {
   console.log(chalk.blue("===> Loading models..."));
   var pathToModels = config.projectRoot ? path.join(config.projectRoot, "models") : path.join(__dirname, "../../../models");
-  fs.readdirSync(pathToModels).map(function (file) {
-    return require(path.join(pathToModels, file));
-  });
+
+  try {
+    fs.readdirSync(pathToModels).forEach(function (file) {
+      return require(path.join(pathToModels, file));
+    });
+  } catch (e) {
+    console.log(chalk.red("Problem loading models from path: ".concat(pathToModels)));
+    console.log(e);
+    process.exit();
+  }
+
   console.log(chalk.blue("===> Done."));
 });
 
@@ -27770,9 +27778,17 @@ var chalk$2 = require("chalk");
 var loadControllers = (function (config) {
   console.log(chalk$2.blue("===> Loading controllers..."));
   var pathToControllers = config.projectRoot ? path.join(config.projectRoot, "controllers") : path.join(__dirname, "../../../controllers");
-  fs.readdirSync(pathToControllers).map(function (file) {
-    return require(path.join(pathToControllers, file));
-  });
+
+  try {
+    fs.readdirSync(pathToControllers).forEach(function (file) {
+      return require(path.join(pathToControllers, file));
+    });
+  } catch (e) {
+    console.log(chalk$2.red("Problem loading controllers from path: ".concat(pathToControllers)));
+    console.log(e);
+    process.exit();
+  }
+
   console.log(chalk$2.blue("===> Done."));
 });
 
