@@ -12,11 +12,7 @@ console.log(chalk.magenta("Thank you for choosing ChubbaJS"));
 
 const app = express();
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// parse application/json
-app.use(bodyParser.json());
+const use = app.use;
 
 console.log(chalk.blue("===> Establishing database connection..."));
 // Create the database pool
@@ -47,4 +43,4 @@ async function configure(config) {
   return context;
 }
 
-export { configure, database, routes, pool, context };
+export { configure, use, database, routes, pool, context };

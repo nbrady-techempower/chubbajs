@@ -47,6 +47,13 @@ function int(target, key, descriptor) {
   col.driverType = "int";
 }
 
+function float(target, key, descriptor) {
+  const col = createColumnInHash(target.constructor.name, key);
+  col.colType = "FLOAT";
+  col.udtName = "float8";
+  col.driverType = "float";
+}
+
 function timestamp(target, key, descriptor) {
   const col = createColumnInHash(target.constructor.name, key);
   col.colType = "TIMESTAMP";
@@ -59,6 +66,13 @@ function boolean(target, key, descriptor) {
   col.colType = "BOOLEAN";
   col.udtName = "bool";
   col.driverType = "boolean";
+}
+
+function text(target, key, descriptor) {
+  const col = createColumnInHash(target.constructor.name, key);
+  col.colType = "TEXT";
+  col.udtName = "text";
+  col.driverType = "text";
 }
 
 function varChar(value) {
@@ -83,7 +97,9 @@ export default {
   notNull,
   varChar,
   int,
+  float,
   timestamp,
+  text,
   boolean,
   defaultValue,
   tableHash
