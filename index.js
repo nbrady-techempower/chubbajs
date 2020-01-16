@@ -26784,6 +26784,13 @@ function _int(target, key, descriptor) {
   col.driverType = "int";
 }
 
+function _float(target, key, descriptor) {
+  var col = createColumnInHash(target.constructor.name, key);
+  col.colType = "FLOAT";
+  col.udtName = "float8";
+  col.driverType = "float";
+}
+
 function timestamp(target, key, descriptor) {
   var col = createColumnInHash(target.constructor.name, key);
   col.colType = "TIMESTAMP";
@@ -26796,6 +26803,13 @@ function _boolean(target, key, descriptor) {
   col.colType = "BOOLEAN";
   col.udtName = "bool";
   col.driverType = "boolean";
+}
+
+function text$1(target, key, descriptor) {
+  var col = createColumnInHash(target.constructor.name, key);
+  col.colType = "TEXT";
+  col.udtName = "text";
+  col.driverType = "text";
 }
 
 function varChar(value) {
@@ -26820,7 +26834,9 @@ var _annotations = {
   notNull: notNull,
   varChar: varChar,
   "int": _int,
+  "float": _float,
   timestamp: timestamp,
+  text: text$1,
   "boolean": _boolean,
   defaultValue: defaultValue,
   tableHash: tableHash
@@ -27803,13 +27819,8 @@ var chalk$3 = require("chalk");
 
 var express = require("express");
 console.log(chalk$3.magenta("Thank you for choosing ChubbaJS"));
-var app = express(); // parse application/x-www-form-urlencoded
-
-app.use(bodyParser_1.urlencoded({
-  extended: false
-})); // parse application/json
-
-app.use(bodyParser_1.json());
+var app = express();
+var use = app.use;
 console.log(chalk$3.blue("===> Establishing database connection...")); // Create the database pool
 
 
@@ -27854,3 +27865,4 @@ exports.configure = configure;
 exports.context = context;
 exports.database = index;
 exports.routes = index$1;
+exports.use = use;
