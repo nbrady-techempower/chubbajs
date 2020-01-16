@@ -27820,7 +27820,7 @@ var chalk$3 = require("chalk");
 var express = require("express");
 console.log(chalk$3.magenta("Thank you for choosing ChubbaJS"));
 var app = express();
-var use = app.use;
+var use = app.use.bind(app);
 console.log(chalk$3.blue("===> Establishing database connection...")); // Create the database pool
 
 

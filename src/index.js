@@ -12,7 +12,7 @@ console.log(chalk.magenta("Thank you for choosing ChubbaJS"));
 
 const app = express();
 
-const use = app.use;
+const use = app.use.bind(app);
 
 console.log(chalk.blue("===> Establishing database connection..."));
 // Create the database pool
