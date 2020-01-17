@@ -26918,7 +26918,7 @@ function () {
     value: function save() {
       var _this2 = this;
 
-      var colKeysToSave, colValsToSave, updateStr, colStr, valStr, insertStr;
+      var colKeysToSave, colValsToSave, updateStr, colStr, valStr, insertStr, result;
       return regeneratorRuntime.async(function save$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -26929,7 +26929,12 @@ function () {
               });
               colValsToSave = colKeysToSave.map(function (k) {
                 return _this2[k];
-              }); // If there's an id, we're updating the model in the DB
+              });
+              /**
+               * If an id for this model already exists, we're using an UPDATE statement by
+               * mapping over the existing keys and concat'ing a single UPDATE statement. We're still
+               * using pg's type checking mechanism to avoid SQL injections.
+               */
 
               if (!this.id) {
                 _context2.next = 11;
@@ -26946,23 +26951,30 @@ function () {
               return regeneratorRuntime.awrap(exports.pool.query(updateStr, colValsToSave));
 
             case 9:
-              _context2.next = 17;
+              _context2.next = 18;
               break;
 
             case 11:
-              // If there's no id, we're inserting into the database
+              /**
+               * If there's no id for this model instance, we'll first INSERT it and then return the
+               * new id and add it to the instance.
+               * @type {string}
+               */
               colStr = colKeysToSave.map(function (k) {
                 return "\"".concat(k, "\"");
               }).join(",");
               valStr = colKeysToSave.map(function (k, i) {
                 return "$".concat(i + 1, "::") + _this2.model.columns[k].driverType;
               }).join(",");
-              insertStr = "INSERT INTO \"".concat(this.tableName, "\" (").concat(colStr, ") VALUES (").concat(valStr, ")");
-              console.log(insertStr);
-              _context2.next = 17;
+              insertStr = "INSERT INTO \"".concat(this.tableName, "\" (").concat(colStr, ") VALUES (").concat(valStr, ") RETURNING id");
+              _context2.next = 16;
               return regeneratorRuntime.awrap(exports.pool.query(insertStr, colValsToSave));
 
-            case 17:
+            case 16:
+              result = _context2.sent;
+              this.id = result.rows[0].id;
+
+            case 18:
             case "end":
               return _context2.stop();
           }

@@ -37,7 +37,11 @@ class Model {
     );
     const colValsToSave = colKeysToSave.map(k => this[k]);
 
-    // If there's an id, we're updating the model in the DB
+    /**
+     * If an id for this model already exists, we're using an UPDATE statement by
+     * mapping over the existing keys and concat'ing a single UPDATE statement. We're still
+     * using pg's type checking mechanism to avoid SQL injections.
+     */
     if (this.id) {
       let updateStr = `UPDATE "${this.tableName}" SET `;
       updateStr += colKeysToSave
@@ -49,14 +53,19 @@ class Model {
       colValsToSave.push(this.id);
       await pool.query(updateStr, colValsToSave);
     } else {
-      // If there's no id, we're inserting into the database
+      /**
+       * If there's no id for this model instance, we'll first INSERT it and then return the
+       * new id and add it to the instance.
+       * @type {string}
+       */
       const colStr = colKeysToSave.map(k => `"${k}"`).join(",");
       const valStr = colKeysToSave
         .map((k, i) => `$${i + 1}::` + this.model.columns[k].driverType)
         .join(",");
-      let insertStr = `INSERT INTO "${this.tableName}" (${colStr}) VALUES (${valStr})`;
-      console.log(insertStr);
-      await pool.query(insertStr, colValsToSave);
+      const insertStr = `INSERT INTO "${this.tableName}" (${colStr}) VALUES (${valStr}) RETURNING id`;
+      const result = await pool.query(insertStr, colValsToSave);
+
+      this.id = result.rows[0].id;
     }
   }
 }
